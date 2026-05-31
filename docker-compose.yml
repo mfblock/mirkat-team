@@ -1,0 +1,48 @@
+services:
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    depends_on:
+      - inbox-viewer
+    profiles:
+      - tunnel
+
+  inbox-viewer:
+    image: mfblock/mirkat-team:latest
+    ports:
+      - "8200:8000"
+    volumes:
+      - /SETUP_REQUIRED:/inbox
+      - /SETUP_REQUIRED:/outbox
+      - /SETUP_REQUIRED:/inbox-archive
+      - /SETUP_REQUIRED:/notes-out
+      - /SETUP_REQUIRED:/team-data:ro
+      - /SETUP_REQUIRED:/journal
+    environment:
+      - INBOX_PATH=/inbox
+      - OUTBOX_PATH=/outbox
+      - ARCHIVE_PATH=/inbox-archive
+      - NOTES_PATH=/notes-out
+      - TEAM_PATH=/team-data/roster.md
+      - JOURNAL_PATH=/journal
+      - INBOX_NEW_THRESHOLD_MINUTES=10
+      - INBOX_STALE_THRESHOLD_DAYS=7
+      - AUTH_TOKEN=${AUTH_TOKEN}
+      - SECRET_KEY=${SECRET_KEY}
+      - ORCHESTRATOR_NAME=${ORCHESTRATOR_NAME:-Vera}
+      - KOFI_URL=${KOFI_URL:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o}
+      - LM_STUDIO_URL=${LM_STUDIO_URL:-http://host.docker.internal:1234/v1}
+      - LM_STUDIO_MODEL=${LM_STUDIO_MODEL:-local-model}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+    restart: unless-stopped
