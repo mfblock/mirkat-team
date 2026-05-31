@@ -311,12 +311,12 @@ import re, sys
 compose_file, inbox, team, archive, notes, roster, journal = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]
 compose = open(compose_file).read()
 patterns = [
-    (r"- .+:/inbox\b",         f'- "{inbox}":/inbox'),
-    (r"- .+:/outbox\b",        f'- "{team}":/outbox'),
-    (r"- .+:/inbox-archive\b", f'- "{archive}":/inbox-archive'),
-    (r"- .+:/notes-out\b",     f'- "{notes}":/notes-out'),
-    (r"- .+:/team-data",       f'- "{roster}":/team-data:ro'),
-    (r"- .+:/journal\b",       f'- "{journal}":/journal'),
+    (r"- .+:/inbox\b",         f"- {inbox}:/inbox"),
+    (r"- .+:/outbox\b",        f"- {team}:/outbox"),
+    (r"- .+:/inbox-archive\b", f"- {archive}:/inbox-archive"),
+    (r"- .+:/notes-out\b",     f"- {notes}:/notes-out"),
+    (r"- .+:/team-data[^\n]*", f"- {roster}:/team-data:ro"),
+    (r"- .+:/journal\b",       f"- {journal}:/journal"),
 ]
 for pattern, repl in patterns:
     compose = re.sub(pattern, repl, compose)
