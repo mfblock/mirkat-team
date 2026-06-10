@@ -14,7 +14,7 @@ services:
   inbox-viewer:
     image: mfblock/mirkat-team:latest
     ports:
-      - "8200:8000"
+      - "127.0.0.1:8200:8000"
     volumes:
       - /SETUP_REQUIRED:/inbox
       - /SETUP_REQUIRED:/outbox
